@@ -9,12 +9,12 @@
 #define LINHAS 5000
 
 /**
- * CAIXA_BAIXA
+ * CAIXA_BAIXA (VOID)
+ * Retorna arquivo com os caracteres em caixa baixa e sem pontuação, usando apenas espaços entre as palavras.
+ *
  * FILE *entrada: ponteiro para o arquivo que será lido;
  * FILE *saida: ponteiro para o arquivo de saída;
- * Retorna arquivo com os caracteres em caixa baixa e sem pontuação, usando apenas espaços entre as palavras.
  */
-
 void caixa_baixa(FILE *entrada, FILE *saida)
 {
     char *palavra, linha[LINHAS];
@@ -25,7 +25,7 @@ void caixa_baixa(FILE *entrada, FILE *saida)
         palavra = strtok (linha, separador); //tokeniza usando como delimitador os caracteres em "separador"
         while (palavra != NULL)
         {
-            fprintf(saida,"%s ", strlwr(palavra)); //converte palavras para caixa baixa
+            fprintf(saida,"%s\n", strlwr(palavra)); //converte palavras para caixa baixa
             palavra = strtok (NULL, separador);
         }
     }
@@ -34,11 +34,12 @@ void caixa_baixa(FILE *entrada, FILE *saida)
 }
 
 /**
- * LE_PARA_ABP
+ * LE_PARA_ABP (PTABP)
+ * Retorna ABP contendo as palavras do arquivo lido, computando o número de comparações necessária para tal.
+ *
  * FILE *entrada: ponteiro para o arquivo que será lido;
- * Retorna: ABP contendo as palavras do arquivo lido.
+ * COMP_GER: Número de comparaçãoes executadas.
  */
-
 PtABP* le_para_abp(FILE *entrada, int *comp_ger)
 {
     PtABP *abp;
@@ -47,18 +48,27 @@ PtABP* le_para_abp(FILE *entrada, int *comp_ger)
 
     while (fgets(linha,LINHAS,entrada)) //percorre todo o arquivo lendo linha a linha
     {
-        palavra = strtok(linha, " ");
+        palavra = strtok(linha, "\n");
         while (palavra != NULL)
         {
             abp = insere_abp(abp, palavra, comp_ger);
-            palavra = strtok (NULL, " ");
+            palavra = strtok (NULL, "\n");
         }
     }
     fclose(entrada);
     return abp;
 }
 
-void le_operacoes(FILE *op, FILE *resultado, PtABP *abp, int *comp_rel)
+/**
+ * LE_OPERAÇOES (VOID)
+ * Interpreta as operações solicitadas no arquivo de texto de entrada e chama a função de acordo, imprimindo no arquivo de saída o resultado destas operações, computando o número de comparações necessária para tal.
+ *
+ * OP: ponteiro para o arquivo que será lido;
+ * RESULTADO: ponteiro para o arquivo de saída com o resultado das operações;
+ * ABP: ABP onde serão efetuadas as operações;
+ * COMP_GER: Número de comparaçãoes executadas.
+ */
+void le_operacoes(FILE *op, FILE *resultado, PtABP *print, PtABP *abp, int *comp_rel)
 {
     char *aux, *palavra, linha[LINHAS];
     int f0, f1;
@@ -77,7 +87,8 @@ void le_operacoes(FILE *op, FILE *resultado, PtABP *abp, int *comp_rel)
             {
                 f0 = atoi(strtok(NULL, " "));
                 f1 = atoi(strtok(NULL, "\n"));
-                contador_abp(resultado, abp, f0, f1, comp_rel);
+                contador_abp(&print, abp, f0, f1, comp_rel);
+                imprime_abp(resultado, print, f0, f1);
             }
             aux = strtok(NULL, " ");
         }
@@ -86,6 +97,21 @@ void le_operacoes(FILE *op, FILE *resultado, PtABP *abp, int *comp_rel)
     fclose(resultado);
 }
 
+/**
+ * RELATORIO_ABP (VOID)
+ * Imprime relatório final concatenando as informações obtidas.
+ *
+ * SAIDA: Arquivo de saída com o relatório final.
+ * RESULTADO: Arquivo com os resultados das operações.
+ * ABP: ABP cujos resultados serão exibidos.
+ * NODOS: Número de nodos da ABP.
+ * ALTURA: Altura da ABP.
+ * FB: Fator de Balanceamento da ABP.
+ * MILISECONDS_GER: tempo de execução da ABP.
+ * MILISECONDS_REL: Tempo de execução dos resultados.
+ * COMP_GER: Número de comparaçãoes executadas na montagem da ABP.
+ * COMP_REL: Número de comparaçãoes executadas no cômputo dos resultados.
+ */
 void relatorio_abp(FILE *saida, FILE *resultado, PtABP *abp, int nodos, int altura, int fb, double miliseconds_ger, double miliseconds_rel, int comp_ger, int comp_rel)
 {
     char aux;
