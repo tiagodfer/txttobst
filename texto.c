@@ -10,12 +10,13 @@
 
 /**
  * CAIXA_BAIXA_ABP (VOID)
- * Retorna arquivo com os caracteres em caixa baixa e sem pontuaчуo, usando apenas espaчos entre as palavras.
+ * Retorna ABP com os caracteres em caixa baixa e sem pontuaчуo, incrementando contador de comparaчѕes.
  *
- * FILE *entrada: ponteiro para o arquivo que serс lido;
- * FILE *saida: ponteiro para o arquivo de saэda;
+ * ENTRADA: ponteiro para o arquivo que serс lido;
+ * ABP: ponteiro duplo para a ABP de saэda;
+ * COMP: ponteiro para o nњmero de comparaчѕes realizadas.
  */
-void caixa_baixa_abp(FILE *entrada, PtABP **abp, int *comp_ger)
+void caixa_baixa_abp(FILE *entrada, PtABP **abp, int *comp)
 {
     char *palavra, linha[LINHAS];
     char separador[]= {" ,.&*%\?!;/'@-\"$#=><()][}{:\n\t"};
@@ -25,7 +26,7 @@ void caixa_baixa_abp(FILE *entrada, PtABP **abp, int *comp_ger)
         palavra = strtok (linha, separador); //tokeniza usando como delimitador os caracteres em "separador"
         while (palavra != NULL)
         {
-            *abp = insere_abp(*abp, strlwr(palavra), comp_ger); //converte palavras para caixa baixa
+            *abp = insere_abp(*abp, strlwr(palavra), comp); //converte palavras para caixa baixa
             palavra = strtok (NULL, separador);
         }
     }
@@ -34,14 +35,15 @@ void caixa_baixa_abp(FILE *entrada, PtABP **abp, int *comp_ger)
 
 /**
  * LE_OPERAЧOES (VOID)
- * Interpreta as operaчѕes solicitadas no arquivo de texto de entrada e chama a funчуo de acordo, imprimindo no arquivo de saэda o resultado destas operaчѕes, computando o nњmero de comparaчѕes necessсria para tal.
+ * Interpreta as operaчѕes solicitadas no arquivo de texto de entrada e chama a funчуo de acordo, imprimindo no arquivo de saэda o resultado destas operaчѕes, incrementando contador de comparaчѕes.
  *
  * OP: ponteiro para o arquivo que serс lido;
  * RESULTADO: ponteiro para o arquivo de saэda com o resultado das operaчѕes;
- * ABP: ABP onde serуo efetuadas as operaчѕes;
- * COMP_GER: Nњmero de comparaчуoes executadas.
+ * ABP0: ponteiro para a ABP que irс receber as palavras ordenadas por frequъncia;
+ * ABP1: ponteiro para a ABP resultante da leitura do texto;
+ * COMP: ponteiro para o nњmero de comparaчѕes realizadas.
  */
-void le_operacoes(FILE *op, FILE *resultado, PtABP *print, PtABP *abp, int *comp_rel)
+void le_operacoes(FILE *op, FILE *resultado, PtABP *abp0, PtABP *abp1, int *comp)
 {
     char *aux, *palavra, linha[LINHAS];
     int f0, f1;
@@ -54,14 +56,14 @@ void le_operacoes(FILE *op, FILE *resultado, PtABP *print, PtABP *abp, int *comp
             if(strcmp(aux, "F") == 0 || strcmp(aux, "f") == 0)
             {
                 palavra = strtok(NULL, "\n");
-                frequencia_abp(resultado, abp, palavra, comp_rel);
+                frequencia_abp(resultado, abp1, palavra, comp);
             }
             else if(strcmp(aux, "C") == 0 || strcmp(aux, "c") == 0)
             {
                 f0 = atoi(strtok(NULL, " "));
                 f1 = atoi(strtok(NULL, "\n"));
-                contador_abp(&print, abp, f0, f1, comp_rel);
-                imprime_abp(resultado, print, f0, f1);
+                contador_abp(&abp0, abp1, f0, f1, comp);
+                imprime_abp(resultado, abp0, f0, f1, comp);
             }
             aux = strtok(NULL, " ");
         }
@@ -74,16 +76,16 @@ void le_operacoes(FILE *op, FILE *resultado, PtABP *print, PtABP *abp, int *comp
  * RELATORIO_ABP (VOID)
  * Imprime relatѓrio final concatenando as informaчѕes obtidas.
  *
- * SAIDA: Arquivo de saэda com o relatѓrio final.
- * RESULTADO: Arquivo com os resultados das operaчѕes.
- * ABP: ABP cujos resultados serуo exibidos.
- * NODOS: Nњmero de nodos da ABP.
- * ALTURA: Altura da ABP.
- * FB: Fator de Balanceamento da ABP.
+ * SAIDA: ponteiro para o arquivo de saэda com o relatѓrio final.
+ * RESULTADO: ponteiro para o arquivo com os resultados das operaчѕes.
+ * ABP: ponteiro para a ABP cujos resultados serуo exibidos.
+ * NODOS: nњmero de nodos da ABP.
+ * ALTURA: altura da ABP.
+ * FB: fator de balanceamento da ABP.
  * MILISECONDS_GER: tempo de execuчуo da ABP.
- * MILISECONDS_REL: Tempo de execuчуo dos resultados.
- * COMP_GER: Nњmero de comparaчуoes executadas na montagem da ABP.
- * COMP_REL: Nњmero de comparaчуoes executadas no cєmputo dos resultados.
+ * MILISECONDS_REL: tempo de execuчуo dos resultados.
+ * COMP_GER: nњmero de comparaчуoes realizadas na montagem da ABP oriunda do texto.
+ * COMP_REL: nњmero de comparaчуoes executadas no cєmputo dos resultados.
  */
 void relatorio_abp(FILE *saida, FILE *resultado, PtABP *abp, int nodos, int altura, int fb, double miliseconds_ger, double miliseconds_rel, int comp_ger, int comp_rel)
 {

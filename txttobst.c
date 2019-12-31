@@ -10,7 +10,7 @@
 #define PARAM 4
 
 /**
- * TXTTOBST 1.2.0:
+ * TXTTOBST 1.2.1:
  * Recebe dois arquivos de texto como entrada, o primeiro é um texto, o segundo um conjunto de operações. Converte todos caracteres do texto para caixa baixa e,
  * passa cada palavra do texto para uma ABP de strings, em seguida, aplica as operações contidas no segundo arquivo e emite um relatório das operações aplicadas e seus resultados.
  * Um otimização na função CONTADOR_ABP evita que se percorra a árvore em vão quando se busca uma frequência a qual nenhuma palavra na ABP tem.
@@ -76,9 +76,9 @@ int main(int argc, char *argv[])
 
         //realização das operações contidas em argv[2]
         start_rel = clock();                                              //inicia a contagem do tempo
-        nodos = conta_abp(abp);                                           //calcula número de nodos da ABP
-        altura = altura_abp(abp);                                         //calcula altura da ABP
-        fb = fator_balanceamento_abp(abp);                                //calcula FB da ABP
+        nodos = conta_abp(abp, &comp_rel);                                //calcula número de nodos da ABP
+        altura = altura_abp(abp, &comp_rel);                              //calcula altura da ABP
+        fb = fator_balanceamento_abp(abp, &comp_rel);                     //calcula FB da ABP
         le_operacoes(op, resultado, print, abp, &comp_rel);               //interpreta e realiza as operações solicitadas
         resultado = fopen("resultado.txt", "r");                          //abre resultado.txt par leitura
         end_rel = clock();                                                //finaliza contagem do tempo
