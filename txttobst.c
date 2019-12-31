@@ -10,8 +10,8 @@
 #define PARAM 2
 
 /**
- * COMPARÁRVORES 0.1.0-alpha:
- * Recebe um arquivo texto como entrada, converte todos caracteres para caixa baixa e, passa cada palavra do texto para um array de strings.
+ * TXTTOBST 0.2.0-beta:
+ * Recebe um arquivo texto como entrada, converte todos caracteres para caixa baixa e, passa cada palavra do texto para uma ABP de strings.
  * Exemplo de chamada "compararvores entrada.txt"
  */
 
@@ -23,7 +23,8 @@ int main(int argc, char *argv[])
     FILE *entrada;
     FILE *saida;
 
-    char vetor[LINHAS][LINHAS];
+    PtABP *abp;
+    abp = inicializa_abp();
 
     if (argc!=PARAM)
     {
@@ -46,11 +47,14 @@ int main(int argc, char *argv[])
 
         saida = fopen("temp.txt", "r");
 
-        le_para_array(saida, vetor);
+        abp = le_para_abp(saida);
+
+        printf("Imprimindo ABP em lista:");
+        imprime_abp_lista(abp);
+        printf("\nImprimindo ABP em níveis:\n");
+        imprime_abp(abp, 0);
 
         end = clock(); //finaliza contagem do tempo
-
-        printf("\nArquivo temp.txt gerado com sucesso.\n");
 
         float miliseconds = (float)(end - start) / CLOCKS_PER_SEC * 1000; //calcula o tempo decorrido
         printf("Tempo: %i ms\n", (int)miliseconds);

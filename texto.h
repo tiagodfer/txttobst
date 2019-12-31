@@ -2,3 +2,4 @@
 
 void caixa_baixa(FILE *entrada, FILE *saida);
 void le_para_array(FILE *entrada, char vetor[LINHAS][LINHAS]);
+PtABP* le_para_abp(FILE *entrada);

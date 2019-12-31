@@ -13,63 +13,66 @@ PtABP* inicializa_abp()
     return NULL;
 }
 
-PtABP* consulta_abp(PtABP *a, char p)
+PtABP* consulta_abp(PtABP *abp, char p[])
 {
-    if (a==NULL)
+    if (!abp)
         return NULL;
-    else if (a->palavra == p)
-        return a;
-    else if (a->palavra > p)
-        return consulta_abp(a->esquerda, p);
+    else if(strcmp(abp->palavra, p) == 0)
+        return abp;
+    else if(strcmp(abp->palavra, p) > 0)
+        return consulta_abp(abp->esquerda, p);
     else
-        return consulta_abp(a->direita, p);
+        return consulta_abp(abp->direita, p);
 }
 
-PtABP* insere_abp(PtABP *a, char p)
+PtABP* insere_abp(PtABP *abp, char p[])
 {
-    if (!a)
+    if(!abp)
     {
-        a = (PtABP*) malloc(sizeof(PtABP));
-        a->palavra = p;
-        a->esquerda = NULL;
-        a->direita = NULL;
+        abp = (PtABP*) malloc(sizeof(PtABP));
+        strcpy(abp->palavra, p);
+        abp->esquerda = NULL;
+        abp->direita = NULL;
+        abp->frequencia = 1;
     }
-    else if (p < (a->palavra))
-        a->esquerda = insere_abp(a->esquerda, p);
+    else if(strcmp(abp->palavra, p) == 0)
+        abp->frequencia++;
+    else if(strcmp(abp->palavra, p) < 0)
+        abp->esquerda = insere_abp(abp->esquerda, p);
     else
-        a->direita = insere_abp(a->direita, p);
-    return a;
+        abp->direita = insere_abp(abp->direita, p);
+    return abp;
 }
 
-int conta_abp(PtABP *a)
+int conta_abp(PtABP *abp)
 {
-    if(!a)
+    if(!abp)
         return 0;
     else
     {
-        return 1 + conta_abp(a->esquerda) + conta_abp(a->direita);
+        return 1 + conta_abp(abp->esquerda) + conta_abp(abp->direita);
     }
 }
 
-void imprime_abp_lista(PtABP *a)
+void imprime_abp_lista(PtABP *abp)
 {
-    if(a)
+    if(abp)
     {
-        printf("%i", a->palavra);
-        imprime_abp_lista(a->esquerda);
-        imprime_abp_lista(a->direita);
+        printf("%s: %i, ", abp->palavra, abp->frequencia);
+        imprime_abp_lista(abp->esquerda);
+        imprime_abp_lista(abp->direita);
     }
 }
 
-void imprime_abp(PtABP *a, int nv)
+void imprime_abp(PtABP *abp, int nv)
 {
-    if(a)
+    if(abp)
     {
         for (int i = 1; i <= nv; i++)
             printf("=");
-        printf("%i\n", a->palavra);
+        printf("%s: %i\n", abp->palavra, abp->frequencia);
         nv++;
-        imprime_abp(a->esquerda, nv);
-        imprime_abp(a->direita, nv);
+        imprime_abp(abp->esquerda, nv);
+        imprime_abp(abp->direita, nv);
     }
 }

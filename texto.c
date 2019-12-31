@@ -34,26 +34,25 @@ void caixa_baixa(FILE *entrada, FILE *saida)
 }
 
 /**
- * LE_PARA_ARRAY
+ * LE_PARA_ABP
  * FILE *entrada: ponteiro para o arquivo que será lido;
- * char vetor[LINHAS][LINHAS]: array de strings de saída;
- * Retorna array de strings, cada array contendo uma palavra do arquivo lido.
+ * Retorna: ABP contendo as palavras do arquivo lido.
  */
 
-void le_para_array(FILE *entrada, char vetor[LINHAS][LINHAS])
+PtABP* le_para_abp(FILE *entrada)
 {
+    PtABP *abp;
+    abp = inicializa_abp();
     char *palavra, linha[LINHAS];
-    int i = 0;
 
     while (fgets(linha,LINHAS,entrada)) //percorre todo o arquivo lendo linha a linha
     {
-        palavra = strtok (linha, " "); //tokeniza usando como delimitador o espaço em branco
+        palavra = strtok(linha, " ");
         while (palavra != NULL)
         {
-            strcpy(vetor[i], palavra); //copia palavras para o array de strings
-            i++;
+            abp = insere_abp(abp, palavra);
             palavra = strtok (NULL, " ");
         }
     }
-    fclose (entrada);
+    return abp;
 }
