@@ -64,6 +64,7 @@ void le_operacoes(FILE *op, FILE *resultado, PtABP *abp0, PtABP *abp1, int *comp
                 f1 = atoi(strtok(NULL, "\n"));
                 contador_abp(&abp0, abp1, f0, f1, comp);
                 imprime_abp(resultado, abp0, f0, f1, comp);
+                abp0 = destroi_abp(abp0, comp);
             }
             aux = strtok(NULL, " ");
         }

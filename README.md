@@ -2,6 +2,9 @@
 
 ## changelog
 
+### 1.2.3
+- destroi ABP do relatório a cada operação requisitada, para evitar que o programa fique sem memória.
+
 ### 1.2.2
 - documentação mais aprofundada do código.
 

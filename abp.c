@@ -347,3 +347,18 @@ void imprime_abp(FILE *resultado, PtABP *abp, int f0, int f1, int *comp)
     fprintf(resultado, "C %i %i\n", f0, f1);
     aux_imprime_abp(resultado, abp, comp);
 }
+
+/**
+ * DESTROI_ABP (PTABP)
+ * Destroi ABP liberando memória alocada. (optamos por não contabilizar as comparações para destruir)
+ */
+PtABP *destroi_abp(PtABP *abp, int *comp)
+{
+    if(!(vazia_abp(abp, comp)))
+    {
+        destroi_abp(abp->esquerda, comp);
+        destroi_abp(abp->direita, comp);
+        free(abp);
+    }
+    return NULL;
+}
