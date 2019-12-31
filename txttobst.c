@@ -6,29 +6,35 @@
 #include "abp.h"
 #include "texto.h"
 
-#define LINHAS 500
-#define PARAM 2
+#define LINHAS 5000
+#define PARAM 4
 
 /**
- * TXTTOBST 0.2.0-beta:
- * Recebe um arquivo texto como entrada, converte todos caracteres para caixa baixa e, passa cada palavra do texto para uma ABP de strings.
- * Exemplo de chamada "compararvores entrada.txt"
+ * TXTTOBST 1.0.0:
+ * Recebe dois arquivos de texto como entrada, o primeiro é um texto, o segundo um conjunto de operações. Converte todos caracteres do texto para caixa baixa e,
+ * passa cada palavra do texto para uma ABP de strings, em seguida, aplica as operações contidas no segundo arquivo e emite um relatório das operações aplicadas e seus resultados.
+ * Exemplo de chamada "compararvores entrada.txt operacoes.txt saida.txt"
  */
 
 int main(int argc, char *argv[])
 {
     setlocale(LC_ALL,"portuguese"); //para imprimir corretamente na tela os caracteres acentuados, tive colocar "portuguese" pois minha máquina está com system locale configurado para inglês
-    clock_t start, end; //para contar o tempo de execução do programa
+    clock_t start_ger, end_ger, start_rel, end_rel; //para contar o tempo de execução do programa
 
     FILE *entrada;
+    FILE *temp;
+    FILE *op;
     FILE *saida;
+    FILE *resultado;
 
     PtABP *abp;
     abp = inicializa_abp();
+    int nodos, altura, fb, comp_ger = 0, comp_rel = 0;
+    double miliseconds_ger, miliseconds_rel;
 
-    if (argc!=PARAM)
+    if(argc!=PARAM)
     {
-        printf ("Número incorreto de argumentos.\nPara chamar o programa, digite: \"compararvores <entrada>.txt <saida>.txt\".\n");
+        printf("Número incorreto de argumentos.\nPara chamar o programa, digite: \"compararvores <entrada>.txt operacoes.txt <saida>.txt\".\n");
         return 1;
     }
     else
@@ -36,29 +42,39 @@ int main(int argc, char *argv[])
         entrada = fopen (argv[1], "r");
         if (!entrada)
         {
-            printf ("Erro ao abrir o arquivo %s.",argv[1]);
+            printf("Erro ao abrir o arquivo %s.",argv[1]);
             return 1;
         }
-        saida = fopen ("temp.txt", "w");
+        temp = fopen("temp.txt", "w");
+        op = fopen (argv[2], "r");
+        saida = fopen(argv[3], "w");
+        resultado = fopen("resultado.txt", "w");
 
-        start = clock(); //inicia a contagem do tempo
+        start_ger = clock(); //inicia a contagem do tempo
 
-        caixa_baixa(entrada, saida);
+        caixa_baixa(entrada, temp);
 
-        saida = fopen("temp.txt", "r");
+        temp = fopen("temp.txt", "r");
 
-        abp = le_para_abp(saida);
+        abp = le_para_abp(temp, &comp_ger);
 
-        printf("Imprimindo ABP em lista:");
-        imprime_abp_lista(abp);
-        printf("\nImprimindo ABP em níveis:\n");
-        imprime_abp(abp, 0);
+        end_ger = clock(); //finaliza contagem do tempo
+        miliseconds_ger = (double)(end_ger - start_ger) / CLOCKS_PER_SEC; //calcula o tempo decorrido
 
-        end = clock(); //finaliza contagem do tempo
+        start_rel = clock();
 
-        float miliseconds = (float)(end - start) / CLOCKS_PER_SEC * 1000; //calcula o tempo decorrido
-        printf("Tempo: %i ms\n", (int)miliseconds);
+        nodos = conta_abp(abp);
+        altura = altura_abp(abp);
+        fb = fator_balanceamento_abp(abp);
 
+        le_operacoes(op, resultado, abp, &comp_rel);
+
+        resultado = fopen("resultado.txt", "r");
+
+        end_rel = clock(); //finaliza contagem do tempo
+        miliseconds_rel = (double)(end_rel - start_rel) / CLOCKS_PER_SEC; //calcula o tempo decorrido
+
+        relatorio_abp(saida, resultado, abp, nodos, altura, fb, miliseconds_ger, miliseconds_rel, comp_ger, comp_rel);
         return 0;
     }
 }
