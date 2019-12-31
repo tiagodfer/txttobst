@@ -10,17 +10,12 @@
 #define PARAM 4
 
 /**
- * TXTTOBST 1.0.0:
+ * TXTTOBST 1.2.0:
  * Recebe dois arquivos de texto como entrada, o primeiro é um texto, o segundo um conjunto de operações. Converte todos caracteres do texto para caixa baixa e,
  * passa cada palavra do texto para uma ABP de strings, em seguida, aplica as operações contidas no segundo arquivo e emite um relatório das operações aplicadas e seus resultados.
- * Uma otimização na função CONTADOR_ABP evita que se percorra a árvore em vão quando se busca uma frequência a qual nenhuma palavra na ABP tem.
+ * Um otimização na função CONTADOR_ABP evita que se percorra a árvore em vão quando se busca uma frequência a qual nenhuma palavra na ABP tem.
  * Exemplo de chamada "compararvores entrada.txt operacoes.txt saida.txt"
  */
-
-/**
-* TODO:
-* - Tratar palavras hifenizadas.
-*/
 
 /**
  * MAIN (INT)
@@ -39,7 +34,7 @@ int main(int argc, char *argv[])
 
     //declaração de variáveis
     clock_t start_ger, end_ger, start_rel, end_rel; //para contar o tempo de execução do programa
-    FILE *entrada, *temp, *op, *resultado, *saida;  //entrada recebe argv[1]; temp recebe o texto convertido para caixa baixa; op recebe argv[2]; resultado recebe o resultado das operações; saida recebe o relatório final
+    FILE *entrada, *op, *resultado, *saida;         //entrada recebe argv[1]; temp recebe o texto convertido para caixa baixa; op recebe argv[2]; resultado recebe o resultado das operações; saida recebe o relatório final
     PtABP *abp, *print;                             //abp recebe a árvore binária de pesquisa (ABP); print recebe a ABP apenas com as palavras com a frequência solicitada
     int nodos, altura, fb, comp_ger, comp_rel;      //nodos recebe o número de nodos; altura recebe a altura da árvore; fb recebe o fator de balanceamento (FB) da árvore; comp_ger recebe o número de comparações realizadas para gerar a árvore binária de pequisa; comp_rel recebe o número de comparações realizadas da geração dos resultados das operações
     double miliseconds_ger, miliseconds_rel;        //miliseconds_ger recebe o tempo de execução da geração da ABP; miliseconds_rel recebe o tempo de execução da geração dos resultados das operações
@@ -64,7 +59,6 @@ int main(int argc, char *argv[])
             printf("Erro ao abrir o arquivo %s.",argv[1]);
             return 1;
         }
-        temp = fopen("temp.txt", "w");
         op = fopen (argv[2], "r"); //abre argv[2] e em seguida testa se sua abertura foi bem sucedida, caso contrário, encerra execução com código 1
         if (!op)
         {
@@ -76,9 +70,7 @@ int main(int argc, char *argv[])
 
         //geração da ABP com as palavras do texto argv[1]
         start_ger = clock();                                              //inicia a contagem do tempo
-        caixa_baixa(entrada, temp);                                       //converte argv[1] para caixa baixa e exporta o resultado para temp.txt
-        temp = fopen("temp.txt", "r");                                    //abre temp.txt para leitura
-        abp = le_para_abp(temp, &comp_ger);                               //insere palavras do temp.txt na ABP
+        caixa_baixa_abp(entrada, &abp, &comp_ger);                        //converte argv[1] para caixa baixa e exporta o resultado para temp.txt
         end_ger = clock();                                                //finaliza contagem do tempo
         miliseconds_ger = (double)(end_ger - start_ger) / CLOCKS_PER_SEC; //calcula o tempo decorrido
 

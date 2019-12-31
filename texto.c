@@ -9,13 +9,13 @@
 #define LINHAS 5000
 
 /**
- * CAIXA_BAIXA (VOID)
+ * CAIXA_BAIXA_ABP (VOID)
  * Retorna arquivo com os caracteres em caixa baixa e sem pontuaчуo, usando apenas espaчos entre as palavras.
  *
  * FILE *entrada: ponteiro para o arquivo que serс lido;
  * FILE *saida: ponteiro para o arquivo de saэda;
  */
-void caixa_baixa(FILE *entrada, FILE *saida)
+void caixa_baixa_abp(FILE *entrada, PtABP **abp, int *comp_ger)
 {
     char *palavra, linha[LINHAS];
     char separador[]= {" ,.&*%\?!;/'@-\"$#=><()][}{:\n\t"};
@@ -25,38 +25,11 @@ void caixa_baixa(FILE *entrada, FILE *saida)
         palavra = strtok (linha, separador); //tokeniza usando como delimitador os caracteres em "separador"
         while (palavra != NULL)
         {
-            fprintf(saida,"%s\n", strlwr(palavra)); //converte palavras para caixa baixa
+            *abp = insere_abp(*abp, strlwr(palavra), comp_ger); //converte palavras para caixa baixa
             palavra = strtok (NULL, separador);
         }
     }
     fclose (entrada);
-    fclose (saida);
-}
-
-/**
- * LE_PARA_ABP (PTABP)
- * Retorna ABP contendo as palavras do arquivo lido, computando o nњmero de comparaчѕes necessсria para tal.
- *
- * FILE *entrada: ponteiro para o arquivo que serс lido;
- * COMP_GER: Nњmero de comparaчуoes executadas.
- */
-PtABP* le_para_abp(FILE *entrada, int *comp_ger)
-{
-    PtABP *abp;
-    abp = inicializa_abp();
-    char *palavra, linha[LINHAS];
-
-    while (fgets(linha,LINHAS,entrada)) //percorre todo o arquivo lendo linha a linha
-    {
-        palavra = strtok(linha, "\n");
-        while (palavra != NULL)
-        {
-            abp = insere_abp(abp, palavra, comp_ger);
-            palavra = strtok (NULL, "\n");
-        }
-    }
-    fclose(entrada);
-    return abp;
 }
 
 /**

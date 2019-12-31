@@ -2,6 +2,9 @@
 
 ## changelog
 
+### 1.2.0
+- não cria mais arquivo temporário, dispensando algumas etapas na criação do relatório.
+
 ### 1.1.0
 - otimização na função CONTADOR_ABP evita que se percorra a árvore em vão quando se busca uma frequência a qual nenhuma palavra na ABP tem.
 
