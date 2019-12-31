@@ -2,6 +2,9 @@
 
 ## changelog
 
+### 1.2.2
+- documentação mais aprofundada do código.
+
 ### 1.2.1
 - os cálculos do Fator de Balanceamento, Número de Nodos e Altura da árvore entram no cômputo das comparações do relatório.
 

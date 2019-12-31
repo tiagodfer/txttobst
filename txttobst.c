@@ -10,7 +10,7 @@
 #define PARAM 4
 
 /**
- * TXTTOBST 1.2.1:
+ * TXTTOBST 1.2.2:
  * Recebe dois arquivos de texto como entrada, o primeiro é um texto, o segundo um conjunto de operações. Converte todos caracteres do texto para caixa baixa e,
  * passa cada palavra do texto para uma ABP de strings, em seguida, aplica as operações contidas no segundo arquivo e emite um relatório das operações aplicadas e seus resultados.
  * Um otimização na função CONTADOR_ABP evita que se percorra a árvore em vão quando se busca uma frequência a qual nenhuma palavra na ABP tem.
